@@ -1,0 +1,4 @@
+.THIS .account-list{
+    max-height: calc(50vh - 100px);
+    overflow: scroll;
+}

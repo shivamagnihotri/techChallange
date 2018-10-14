@@ -1,0 +1,229 @@
+<aura:component controller="AccountsListAndDetailCtlr"  implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" >
+    
+    <aura:attribute name="accountList" type="List" default="[]" />    
+    <aura:attribute name="recordId" type="string" />
+    <aura:attribute name="record" type="Object" />
+    <aura:attribute name="account" type="Object" />      
+    <aura:attribute name="data" type="Object" />
+    <aura:handler name="change" value="{!v.data}" action="{!c.loadAccount}" />    
+    <aura:attribute name="recordError" type="String" description="An error message bound to force:recordData"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <aura:if isTrue="{!not(empty(v.recordId))}">
+        <force:recordData aura:id="accrec"
+                          recordId="{!v.recordId}"                          
+                          fields="Id, Name, AccountNumber, OwnerId, Owner.Name, AccountSource, AnnualRevenue, Type, Industry, Description, Phone, Fax"
+                          targetError="{!v.recordError}"
+                          targetRecord="{!v.record}"
+                          targetFields="{!v.account}"
+                          />
+    </aura:if>
+    <lightning:card >
+        <aura:set attribute="title">
+            <div class="slds-page-header slds-page-header_vertical">
+                <div class="slds-media">
+                    <div class="slds-media__figure">
+                        <span class="slds-icon_container slds-icon-standard-account" title="Account">
+                            <lightning:icon iconName="standard:account" size="small"/>
+                            <span class="slds-assistive-text">Account</span>
+                        </span>
+                    </div>
+                    <div class="slds-media__body">
+                        <div class="slds-page-header__name">
+                            <div class="slds-page-header__name-title">
+                                <h1>
+                                    <span class="slds-page-header__title" title="Accounts">Accounts</span>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aura:set>        
+        
+        <p class="slds-p-horizontal_small slds-box">            
+            <div class="account-list">
+                <aura:if isTrue="{!v.accountList.length > 0}">
+                    <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                
+                                <th aria-label="Account Name" class="slds-text-title_caps " scope="col">
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Account Name">Account Name</span>
+                                    </div>
+                                </th>
+                                <th aria-label="Account Number" class="slds-text-title_caps " scope="col">
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Account Number">Account Number</span>
+                                    </div>
+                                </th>
+                                <th aria-label="Account Owner" class="slds-text-title_caps " scope="col">
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Account Owner">Account Owner</span>
+                                    </div>
+                                </th>
+                                <th aria-label="Account Source" class="slds-text-title_caps " scope="col">
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Account Source">Account Source</span>
+                                    </div>
+                                </th>
+                                <th aria-label="Annual Revenue" class="slds-text-title_caps " scope="col">
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Annual Revenue">Annual Revenue</span>
+                                    </div>
+                                </th>
+                                <th aria-label="Type" class="slds-text-title_caps " scope="col">
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Type">Type</span>
+                                    </div>
+                                </th>
+                                <th aria-label="Industry" class="slds-text-title_caps " scope="col">
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Industry">Industry</span>
+                                    </div>
+                                </th>
+                                <th aria-label="Created By" class="slds-text-title_caps " scope="col">
+                                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                                        <span class="slds-truncate" title="Created By">Created By</span>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.accountList}" var="acc" indexVar="index">
+                                <tr aria-selected="false" class="slds-hint-parent">
+                                    
+                                    <th scope="row" tabindex="{!index}">
+                                        <div class="slds-truncate" title="{!acc.Name}">
+                                            <a href="javascript:void(0);" data-id="{!acc.Id}" tabindex="-1"
+                                               onclick="{!c.showAccountDetail}" data-name="{!acc.Name}">
+                                                {!acc.Name}
+                                            </a>
+                                        </div>
+                                    </th>
+                                    <td role="gridcell">
+                                        <div class="slds-truncate" title="{!acc.AccountNumber}">{!acc.AccountNumber}</div>
+                                    </td>
+                                    <td role="gridcell">
+                                        <div class="slds-truncate" title="{!acc.Owner.Name}">{!acc.Owner.Name}</div>
+                                    </td>
+                                    <td role="gridcell">
+                                        <div class="slds-truncate" title="{!acc.AccountSource}">{!acc.AccountSource}</div>
+                                    </td>
+                                    <td role="gridcell">
+                                        <div class="slds-truncate" title="{!acc.AnnualRevenue}">
+                                            <p><lightning:formattedNumber value="{!acc.AnnualRevenue}" style="currency" currencyCode="USD"/></p>
+                                        </div>
+                                    </td>
+                                    <td role="gridcell">
+                                        <div class="slds-truncate" title="{!acc.Type}">{!acc.Type}</div>
+                                    </td>
+                                    <td role="gridcell">
+                                        <div class="slds-truncate" title="{!acc.Industry}">
+                                            {!acc.Industry}
+                                        </div>
+                                    </td>
+                                    <td role="gridcell">
+                                        <div class="slds-truncate" title="{!acc.CreatedBy.Name}">
+                                            {!acc.CreatedBy.Name}    
+                                        </div>
+                                    </td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </aura:if>
+                <aura:if isTrue="{!v.accountList.length == 0}">
+                    <div class="slds-align_absolute-center">
+                        No record found!
+                    </div>
+                </aura:if>
+            </div>                                    
+        </p>
+    </lightning:card>
+    <aura:if isTrue="{!not(empty(v.record))}">
+        <lightning:card class="acc-details">
+            <aura:set attribute="title">
+                <div class="slds-page-header slds-page-header_vertical">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <span class="slds-icon_container slds-icon-standard-account" title="Account">
+                                <lightning:icon iconName="standard:account" />
+                                <span class="slds-assistive-text">Account</span>
+                            </span>
+                        </div>
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1>
+                                        <p>Account</p>
+                                        <span class="slds-page-header__title" title="{!v.record.name}">
+                                            {!v.record.name}
+                                        </span>
+                                    </h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </aura:set>
+            <p class="slds-p-horizontal_medium slds-p-top_medium account-list slds-box">
+                <aura:if isTrue="{!not(empty(v.recordId))}">  
+                    <lightning:recordViewForm recordId="{!v.recordId}" objectApiName="Account">
+                        <fieldset class="slds-form-element slds-form_compound">
+                            <div class="slds-form-element__control slds-p-left_x-small">
+                                <div class="slds-form-element__group"> 
+                                    <div class="slds-form-element__row slds-wrap">
+                                        <div class="slds-form-element slds-size--1-of-2">
+                                            <lightning:outputField fieldName="Name" />
+                                        </div>                                             
+                                        <div class="slds-form-element slds-size--1-of-2">
+                                            <lightning:outputField fieldName="AccountNumber" />
+                                        </div>
+                                        <div class="slds-form-element slds-size--1-of-2">
+                                            <lightning:outputField fieldName="OwnerId" />
+                                        </div>
+                                        <div class="slds-form-element slds-size--1-of-2">
+                                            <lightning:outputField fieldName="AccountSource" />
+                                        </div>
+                                        <div class="slds-form-element slds-size--1-of-2">
+                                            <lightning:outputField fieldName="ParentId" />
+                                        </div>
+                                        <div class="slds-form-element slds-size--1-of-2">
+                                            <lightning:outputField fieldName="AnnualRevenue" />
+                                        </div>
+                                        <div class="slds-form-element slds-size--1-of-2">
+                                            <lightning:outputField fieldName="Type" />
+                                        </div>
+                                        <div class="slds-form-element slds-size--1-of-2">
+                                            <lightning:outputField fieldName="CreatedById" />
+                                        </div>
+                                        <div class="slds-form-element slds-size--1-of-2">
+                                            <lightning:outputField fieldName="LastModifiedById" />
+                                        </div>
+                                        
+                                        <div class="slds-form-element slds-size--1-of-2">
+                                            <lightning:outputField fieldName="Industry" />
+                                        </div>
+                                        <div class="slds-form-element slds-size--1-of-2">
+                                            <lightning:outputField fieldName="Description" />
+                                        </div>
+                                        <div class="slds-form-element slds-size--1-of-2">
+                                            <lightning:outputField fieldName="Phone" />
+                                        </div>
+                                        <div class="slds-form-element slds-size--1-of-2">
+                                            <lightning:outputField fieldName="Fax" />
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div>
+                        </fieldset> 
+                    </lightning:recordViewForm>
+                </aura:if>
+            </p>
+        </lightning:card>
+    </aura:if>
+</aura:component>

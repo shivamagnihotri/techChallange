@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>AccountLIstWithNewEditDeleteCtlr</members>
+        <members>AccountMassEditDeleteCtlr</members>
+        <members>AccountsListAndDetailCtlr</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>AccountListWithNewEditDeleteApp</members>
+        <members>AccountListwithNewEditDelete</members>
+        <members>AccountMassEditDelete</members>
+        <members>AccountMassEditDeleteApp</members>
+        <members>AccountsList</members>
+        <members>AccountsListAndDetail</members>
+        <members>DeleteAccount</members>
+        <members>EditAccount</members>
+        <members>NewAccount</members>
+        <name>AuraDefinitionBundle</name>
+    </types>
+    <version>36.0</version>
+</Package>
